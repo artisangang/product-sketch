@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <base href="/">
+    <style type="text/css">
+        #products {
+            list-style: none;
+            padding: 0;
+            margin:0; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li><a href="javascript:;" onclick="addMeasurement()">Measurement</a></li>
+                    <li><a href="javascript:;" onclick="sketch.text('Text', 20)"><i class="glyphicon glyphicon-pencil"></i> Text</a></li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">BGs <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="sketch.bg('assets/images/bg/r2.jpg')">BG 1</a></li>
+                        <li><a href="javascript:;" onclick="sketch.bg('assets/images/bg/r3.jpg')">BG 2</a></li>
+                        <li><a href="javascript:;" onclick="sketch.bg('assets/images/bg/r4.jpg')">BG 3</a></li>
+                      </ul>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Products <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="addProduct(0)">Dino</a></li>
+                        <li><a href="javascript:;" onclick="addProduct(1)">Duck</a></li>
+                        <li><a href="javascript:;" onclick="addProduct(2)">Mickey</a></li>
+                        <li><a href="javascript:;" onclick="addProduct(3)">Moto</a></li>
+                        <li><a href="javascript:;" onclick="addProduct(4)">Scorpion</a></li>                       
+                      </ul>
+                    </li>
+                    <li><a href="javascript:;" onclick="sketch.remove()">Remove</a></li>
+                  </ul>
+            </div>
+        </nav>
+
+        <div class="row">
+        <div class="col-sm-9">
+            <canvas id="canvas" width="640" height="360"></canvas>
+        </div>
+        <div class="col-sm-3">
+            <ul id="products"></ul>
+            <p>Total: <span id="total"></span></p>
+            <button class="btn btn-primary" onclick="save()">Add To card</button>
+            <a id="save"></a>
+        </div>
+        </div>
+    </div>
+    <script src="bundle.js"></script>   
+     <script>
+
+
+            var products = [
+                {
+                    image:'assets/images/products/dino.png',
+                    price:100,
+                    id:0
+                },
+                  {
+                    image:'assets/images/products/duck.png',
+                    price:80,
+                    id:1
+                },
+                  {
+                    image:'assets/images/products/mickey.png',
+                    price:50,
+                    id:2
+                },
+                  {
+                    image:'assets/images/products/moto.png',
+                    price:90,
+                    id:3
+                },
+                {
+                    image:'assets/images/products/scorpion.png',
+                    price:55,
+                    id:4
+                },
+            ], total = 0;
+
+            var sketch = new Sketch('canvas');
+
+            function addProduct(index) {
+                sketch.product(index, products[index])
+            }
+
+          
+            document.addEventListener("sketch.product.added", function (e) {
+                
+                $("#products").append('<li id="p'+e.detail.id+'">' + JSON.stringify(e.detail) + '</li>');
+                $("#total").text(total = total + e.detail.price);
+
+            }, false);
+
+             document.addEventListener("sketch.product.removed", function (e) {
+                
+                $("#products li#p"+e.detail.id).remove();
+                $("#total").text(total = total - e.detail.price);
+
+            }, false);
+
+            function save() {
+                var image = sketch.save("image/png");
+
+                window.open(image, '_blank'); 
+
+                $('#save').attr({
+                    'download': 'product.png', 
+                    'href'    : image.replace("image/png", "image/octet-stream")             
+                }).text('save');
+            }
+
+            function addMeasurement() {
+                sketch.measurement('50mm');
+            }
+
+
+    </script>
+</body>
+</html>
